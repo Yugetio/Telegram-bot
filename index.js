@@ -5,11 +5,25 @@ process.env["NTBA_FIX_319"] = 1; //for start
 
 const TelegramBot = require('node-telegram-bot-api');
 //Telegram token from @BotFather
-const token = require('./token');
+const TOKEN = require('./token');
 // Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(TOKEN, {
+  polling: {
+    interval: 300,
+    autoStart: true,
+    params: {
+      timeout: 10
+    }
+  }
+});
 
-bot.on('message', (msg) => {
-  console.log(msg);
-  bot.sendMessage(msg.chat.id, 'Привет ' + msg.chat['first_name']);
+bot.on('message', msg => {
+  const { id } = msg.chat;
+  const { text } = msg;
+
+  if (text.toLowerCase() == 'hello' || text.toLowerCase() == 'привет') {
+    bot.sendMessage(id, `Hello, ${msg.chat.first_name}`);
+  } else {
+    bot.sendMessage(id, JSON.stringify(msg, null, 4));
+  }
 });
