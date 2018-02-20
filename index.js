@@ -285,20 +285,20 @@ bot.onText(/\/audio2/, msg => {
 
 
 //отправка файлов
-bot.onText(/\/doc1/, msg => {
+/* bot.onText(/\/doc1/, msg => {
   bot.sendDocument(msg.chat.id, './files/file.txt');
 });
 
-const fs = require('fs');
+const fs = require('fs'); //только архив...
 bot.onText(/\/doc2/, msg => {
   bot.sendMessage(msg.chat.id, 'Upload start...');
 
-  /*  fs.readFile(__dirname + '/files/file.zip', (err, data) => {
-     bot.sendDocument(msg.chat.id, data);
-   }); */
+  // fs.readFile(__dirname + '/files/file.zip', (err, data) => {
+  //   bot.sendDocument(msg.chat.id, data);
+  // });
 
-  /*  const stream = fs.createReadStream('./files/file.zip');
-   bot.sendDocument(msg.chat.id, stream); */
+  // const stream = fs.createReadStream('./files/file.zip');
+  // bot.sendDocument(msg.chat.id, stream);
 
   fs.readFile(__dirname + '/files/file.zip', (err, data) => {
     bot.sendDocument(msg.chat.id, data, {
@@ -306,5 +306,18 @@ bot.onText(/\/doc2/, msg => {
     }).then(() => {
       bot.sendMessage(msg.chat.id, 'Uploading finish');
     });
+  });
+}); */
+
+
+//отправка стикера (только webp)
+bot.onText(/\/s1/, msg => {
+  bot.sendSticker(msg.chat.id, './files/sticker.webp');
+});
+
+const fs = require('fs');
+bot.onText(/\/s2/, msg => {
+  fs.readFile(__dirname + '/files/sticker.webp', (err, data) => {
+    bot.sendSticker(msg.chat.id, data);
   });
 });
