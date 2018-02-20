@@ -311,7 +311,7 @@ bot.onText(/\/doc2/, msg => {
 
 
 //отправка стикера (только webp)
-bot.onText(/\/s1/, msg => {
+/* bot.onText(/\/s1/, msg => {
   bot.sendSticker(msg.chat.id, './files/sticker.webp');
 });
 
@@ -319,5 +319,31 @@ const fs = require('fs');
 bot.onText(/\/s2/, msg => {
   fs.readFile(__dirname + '/files/sticker.webp', (err, data) => {
     bot.sendSticker(msg.chat.id, data);
+  });
+}); */
+
+
+
+//отправка видео
+bot.onText(/\/v1/, msg => {
+  bot.sendMessage(msg.chat.id, 'Send video...');
+  bot.sendVideo(msg.chat.id, 'http://test-project.cc.ua/videoplayback.mp4');
+});
+
+bot.onText(/\/v2/, msg => { //округляет видео до 1 мин. если видео больше
+  bot.sendMessage(msg.chat.id, 'Send video...');
+  bot.sendVideoNote(msg.chat.id, 'http://test-project.cc.ua/videoplayback.mp4');
+});
+
+bot.onText(/\/v3/, msg => {
+  bot.sendMessage(msg.chat.id, 'Send video...');
+  bot.sendVideo(msg.chat.id, './files/videoplayback.mp4');
+});
+
+const fs = require('fs');
+bot.onText(/\/v4/, msg => {
+  bot.sendMessage(msg.chat.id, 'Send video...');
+  fs.readFile(__dirname + '/files/videoplayback.mp4', (err, data) => {
+    bot.sendVideo(msg.chat.id, data);
   });
 });
