@@ -242,8 +242,10 @@ bot.onText(/\/start/, (msg, [source, match]) => {
   });
 }); */
 
+
+
 //отправка картинок
-const fs = require('fs');
+/* const fs = require('fs');
 bot.onText(/\/picture1/, msg => {
   bot.sendPhoto(msg.chat.id, fs.readFileSync(__dirname + '/files/e6c.png'));
 });
@@ -257,4 +259,24 @@ bot.onText(/\/picture3/, msg => {
   bot.sendPhoto(msg.chat.id, './files/e6c.png', {
     caption: 'Lenguage'
   });
+}); */
+
+
+
+//отправка аудио
+const fs = require('fs');
+bot.onText(/\/audio1/, msg => {
+  bot.sendAudio(msg.chat.id, './files/Galaxy_Supernova.mp3');
+});
+
+bot.onText(/\/audio2/, msg => {
+  bot.sendMessage(msg.chat.id, 'Start audio uploading...');
+
+  fs.readFile(__dirname + '/files/Galaxy_Supernova.mp3', (err, data) => {
+    console.log(data);
+    bot.sendAudio(msg.chat.id, data).then(() => {
+      bot.sendMessage(msg.chat.id, 'Uploading finish');
+    });
+  });
+
 });
