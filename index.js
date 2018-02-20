@@ -325,7 +325,7 @@ bot.onText(/\/s2/, msg => {
 
 
 //отправка видео
-bot.onText(/\/v1/, msg => {
+/* bot.onText(/\/v1/, msg => {
   bot.sendMessage(msg.chat.id, 'Send video...');
   bot.sendVideo(msg.chat.id, 'http://test-project.cc.ua/videoplayback.mp4');
 });
@@ -346,4 +346,12 @@ bot.onText(/\/v4/, msg => {
   fs.readFile(__dirname + '/files/videoplayback.mp4', (err, data) => {
     bot.sendVideo(msg.chat.id, data);
   });
+}); */
+
+
+
+//отправка геолокации
+//35.701964, 139.774341 - tokio (akihabara)
+bot.onText(/\/loc/, msg => {
+  bot.sendLocation(msg.chat.id, 35.701964, 139.774341);
 });
