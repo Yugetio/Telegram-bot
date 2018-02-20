@@ -160,3 +160,25 @@ bot.on('callback_query', query => {
   bot.sendMessage(query.message.chat.id, JSON.stringify(query, null, 4)); // отсылает ответ при нажатии на кнопку
   // bot.answerCallbackQuery(query.id, `${query.data}`); //alert
 }); */
+
+
+//инлайн режим (вызов бота в другом чате)
+/* bot.on('inline_query', query => {
+  const results = [];
+
+  for (let i = 0; i < 5; i++) {
+    results.push({
+      type: 'article',
+      id: i.toString(),
+      title: 'Title ' + i,
+      input_message_content: {
+        message_text: 'Article №' + (i + 1)
+      }
+    });
+  }
+
+  bot.answerInlineQuery(query.id, results, {
+    cache_time: 0
+  });
+
+}); */
