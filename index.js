@@ -352,6 +352,16 @@ bot.onText(/\/v4/, msg => {
 
 //отправка геолокации
 //35.701964, 139.774341 - tokio (akihabara)
-bot.onText(/\/loc/, msg => {
+/* bot.onText(/\/loc/, msg => {
   bot.sendLocation(msg.chat.id, 35.701964, 139.774341);
+}); */
+
+
+
+//отправка контакта
+bot.onText(/\/contact/, msg => {
+  //номер телефона, имя, фамилия
+  bot.sendContact(msg.chat.id, '+380974332123', 'Name', {
+    last_name: 'Soname'
+  });
 });
