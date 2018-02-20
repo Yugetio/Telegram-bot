@@ -264,11 +264,12 @@ bot.onText(/\/picture3/, msg => {
 
 
 //отправка аудио
-const fs = require('fs');
+/* 
 bot.onText(/\/audio1/, msg => {
   bot.sendAudio(msg.chat.id, './files/Galaxy_Supernova.mp3');
 });
 
+const fs = require('fs');
 bot.onText(/\/audio2/, msg => {
   bot.sendMessage(msg.chat.id, 'Start audio uploading...');
 
@@ -279,4 +280,31 @@ bot.onText(/\/audio2/, msg => {
     });
   });
 
+}); */
+
+
+
+//отправка файлов
+bot.onText(/\/doc1/, msg => {
+  bot.sendDocument(msg.chat.id, './files/file.txt');
+});
+
+const fs = require('fs');
+bot.onText(/\/doc2/, msg => {
+  bot.sendMessage(msg.chat.id, 'Upload start...');
+
+  /*  fs.readFile(__dirname + '/files/file.zip', (err, data) => {
+     bot.sendDocument(msg.chat.id, data);
+   }); */
+
+  /*  const stream = fs.createReadStream('./files/file.zip');
+   bot.sendDocument(msg.chat.id, stream); */
+
+  fs.readFile(__dirname + '/files/file.zip', (err, data) => {
+    bot.sendDocument(msg.chat.id, data, {
+      caption: 'Some text...'
+    }).then(() => {
+      bot.sendMessage(msg.chat.id, 'Uploading finish');
+    });
+  });
 });
