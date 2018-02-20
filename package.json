@@ -4,11 +4,12 @@
   "description": "Telegram bot for practice and learning JS",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Yugetio/Telegram-bot.git"
+    "url": "https://github.com/Yugetio/Telegram-bot.git"
   },
   "keywords": [
     "telegramBot",
@@ -24,5 +25,8 @@
   "homepage": "https://github.com/Yugetio/Telegram-bot#readme",
   "dependencies": {
     "node-telegram-bot-api": "^0.30.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.15.1"
   }
 }
