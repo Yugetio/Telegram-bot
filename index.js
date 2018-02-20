@@ -187,7 +187,7 @@ bot.on('callback_query', query => {
 
 
 // работа с сообщениями
-const inline_keyboard = [
+/* const inline_keyboard = [
   [{
     text: 'Forward',
     callback_data: 'forward'
@@ -229,9 +229,7 @@ bot.on('callback_query', query => {
       break;
   }
 
-  bot.answerCallbackQuery({
-    callback_query_id: query.id
-  });
+  // bot.answerCallbackQuery({ callback_query_id: query.id });
 });
 
 bot.onText(/\/start/, (msg, [source, match]) => {
@@ -241,5 +239,22 @@ bot.onText(/\/start/, (msg, [source, match]) => {
     reply_markup: {
       inline_keyboard
     }
+  });
+}); */
+
+//отправка картинок
+const fs = require('fs');
+bot.onText(/\/picture1/, msg => {
+  bot.sendPhoto(msg.chat.id, fs.readFileSync(__dirname + '/files/e6c.png'));
+});
+
+bot.onText(/\/picture2/, msg => {
+  bot.sendPhoto(msg.chat.id, './files/e6c.png');
+});
+
+
+bot.onText(/\/picture3/, msg => {
+  bot.sendPhoto(msg.chat.id, './files/e6c.png', {
+    caption: 'Lenguage'
   });
 });
