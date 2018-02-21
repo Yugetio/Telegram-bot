@@ -21,15 +21,24 @@ bot.onText(/\/start/, msg => {
 });
 
 bot.on('message', msg => {
+  const chatID = helper.getChatId(msg);
+
   switch (msg.text) {
     case kb.home.favourite:
       ;
       break;
     case kb.home.films:
-      ;
+      bot.sendMessage(chatID, 'Выберите жанр:', {
+        reply_markup: { keyboard: keyboard.films }
+      });
       break;
     case kb.home.cinemas:
       ;
+      break;
+    case kb.back:
+      bot.sendMessage(chatID, 'Что хотите посмотреть?', {
+        reply_markup: { keyboard: keyboard.home }
+      });
       break;
   }
 });
