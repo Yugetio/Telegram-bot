@@ -44,6 +44,7 @@ bot.on('message', msg => {
   const chatID = helper.getChatId(msg);
 
   switch (msg.text) {
+    //main block
     case kb.home.favourite:
       ;
       break;
@@ -53,13 +54,18 @@ bot.on('message', msg => {
       });
       break;
     case kb.home.cinemas:
-      ;
+      bot.sendMessage(chatID, 'Отправить местоположение', {
+        reply_markup: {
+          keyboard: keyboard.cinemas
+        }
+      });
       break;
     case kb.back:
       bot.sendMessage(chatID, 'Что хотите посмотреть?', {
         reply_markup: { keyboard: keyboard.home }
       });
       break;
+      //film block
     case kb.film.comedy:
       sendFilmsByQuery(chatID, { type: 'comedy' });
       break;
@@ -69,6 +75,10 @@ bot.on('message', msg => {
     case kb.film.random:
       sendFilmsByQuery(chatID, {});
       break;
+  }
+
+  if (msg.location) {
+    console.log(msg.location);
   }
 });
 
