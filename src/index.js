@@ -184,7 +184,7 @@ bot.on('callback_query', query => {
 
   switch (type) {
     case ACTION_TYPE.SHOW_CINEMAS_MAP:
-      '';
+      bot.sendLocation(query.message.chat.id, data.lat, data.lon);
       break;
     case ACTION_TYPE.SHOW_CINEMAS:
       sendCinemasByQuery(userId, { uuid: { '$in': data.cinemaUuids } });
