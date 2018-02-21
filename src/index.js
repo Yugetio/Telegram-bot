@@ -56,13 +56,13 @@ bot.on('message', msg => {
       });
       break;
     case kb.film.comedy:
-      sendFilmsByQuery(chatID, {});
-      break;
-    case kb.film.ection:
       sendFilmsByQuery(chatID, { type: 'comedy' });
       break;
-    case kb.film.random:
+    case kb.film.ection:
       sendFilmsByQuery(chatID, { type: 'action' });
+      break;
+    case kb.film.random:
+      sendFilmsByQuery(chatID, {});
       break;
   }
 });
@@ -71,7 +71,21 @@ bot.on('message', msg => {
 //========get date from databases================
 function sendFilmsByQuery(chatId, query) {
   Film.find(query).then(films => {
-    console.log(films);
+    const html = films.map((f, i) => `<b>${i+1}</b> ${f.name} - /f${f.uuid}`).join('\n');
+
+    sendHTML(chatId, html, 'films');
   });
 }
 //===============================================
+
+function sendHTML(chatId, html, keyboardName = null) {
+  const options = {
+    parse_mode: 'HTML'
+  };
+  if (keyboardName) {
+    options['reply_markup'] = {
+      keyboard: keyboard[keyboardName]
+    }
+  }
+  bot.sendMessage(chatId, html, options);
+}
