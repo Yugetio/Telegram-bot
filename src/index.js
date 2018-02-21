@@ -95,36 +95,47 @@ bot.on('message', msg => {
 
 bot.onText(/\/f(.+)/, (msg, [source, match]) => {
   const filmUuid = helper.getItemUuid(source);
-  const chatId = msg.chat.id;
+  const chatId = helper.getChatId(msg);
 
-  Film.findOne({ uuid: filmUuid }).then(film => {
-    const caption = `Название: ${film.name}\nГод: ${film.year}\nРейтинг: ${film.rate}\nДлительность: ${film.length}\nСтрана: ${film.country}`;
+  Promise.all([
+      Film.findOne({ uuid: filmUuid }),
+      User.findOne({ telegramId: msg.from.id })
+    ])
+    .then(([film, user]) => {
+      let isFav = false;
 
-    bot.sendPhoto(chatId, film.picture, {
-      caption: caption,
-      reply_markup: {
-        inline_keyboard: [
-          [{
-            text: 'Добавить в избранное',
-            callback_data: JSON.stringify({
-              type: ACTION_TYPE.TOGGLE_FAV_FILM,
-              filmUuid: film.uuid
-            })
-          }, {
-            text: 'Показать кинотеатры',
-            callback_data: JSON.stringify({
-              type: ACTION_TYPE.SHOW_CINEMAS,
-              cinemaUuids: film.cinemas
-            })
-          }],
-          [{
-            text: `Кинопоиск ${film.name}`,
-            url: film.link
-          }]
-        ]
+      if (user) {
+        isFav = user.films.indexOf(film.uuid) !== -1;
       }
-    })
-  });
+      const favText = isFav ? 'Удалить из избраного' : 'Добавить в избранное';
+      const caption = `Название: ${film.name}\nГод: ${film.year}\nРейтинг: ${film.rate}\nДлительность: ${film.length}\nСтрана: ${film.country}`;
+
+      bot.sendPhoto(chatId, film.picture, {
+        caption: caption,
+        reply_markup: {
+          inline_keyboard: [
+            [{
+              text: favText,
+              callback_data: JSON.stringify({
+                type: ACTION_TYPE.TOGGLE_FAV_FILM,
+                filmUuid: film.uuid,
+                isFav: isFav
+              })
+            }, {
+              text: 'Показать кинотеатры',
+              callback_data: JSON.stringify({
+                type: ACTION_TYPE.SHOW_CINEMAS,
+                cinemaUuids: film.cinemas
+              })
+            }],
+            [{
+              text: `Кинопоиск ${film.name}`,
+              url: film.link
+            }]
+          ]
+        }
+      })
+    });
 });
 
 bot.onText(/\/c(.+)/, (msg, [source, match]) => {
@@ -160,6 +171,7 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
 });
 
 bot.on('callback_query', query => {
+  const userId = query.from.id;
   let data;
 
   try {
@@ -172,16 +184,16 @@ bot.on('callback_query', query => {
 
   switch (type) {
     case ACTION_TYPE.SHOW_CINEMAS_MAP:
-      ;
+      '';
       break;
     case ACTION_TYPE.SHOW_CINEMAS:
-      ;
+      '';
       break;
     case ACTION_TYPE.TOGGLE_FAV_FILM:
-      ;
+      toggleFavouriteFilm(userId, query.id, data);
       break;
     case ACTION_TYPE.SHOW_FILMS:
-      ;
+      '';
       break;
   }
 });
@@ -224,4 +236,34 @@ function getCinemasCoord(chatId, location) {
     }).join('\n');;
     sendHTML(chatId, html, 'cinemas');
   });
+}
+
+function toggleFavouriteFilm(userId, queryId, { filmUuid, isFav }) {
+  let userPromise;
+
+  User.findOne({ telegramId: userId })
+    .then(user => {
+      if (user) {
+        if (isFav) {
+          user.films = user.films.filter(fUuid => fUuid !== filmUuid);
+        } else {
+          user.films.push(filmUuid);
+        }
+        userPromise = user;
+      } else {
+        userPromise = new User({
+          telegramId: userId,
+          films: [filmUuid]
+        });
+      }
+
+      const answerText = isFav ? 'Удалено' : 'Добавлено';
+
+      userPromise.save().then(_ => {
+        bot.answerCallbackQuery({
+          callback_query_id: queryId,
+          text: answerText
+        })
+      }).catch(err => console.log(err));
+    }).catch(err => console.log(err));
 }
