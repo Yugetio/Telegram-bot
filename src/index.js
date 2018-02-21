@@ -57,7 +57,7 @@ bot.on('message', msg => {
   switch (msg.text) {
     //main block
     case kb.home.favourite:
-      ;
+      showFavouriteFilms(chatID, msg.from.id);
       break;
     case kb.home.films:
       bot.sendMessage(chatID, 'Выберите жанр:', {
@@ -187,7 +187,7 @@ bot.on('callback_query', query => {
       '';
       break;
     case ACTION_TYPE.SHOW_CINEMAS:
-      '';
+      sendCinemasByQuery(userId, { uuid: { '$in': data.cinemaUuids } });
       break;
     case ACTION_TYPE.TOGGLE_FAV_FILM:
       toggleFavouriteFilm(userId, query.id, data);
@@ -266,4 +266,35 @@ function toggleFavouriteFilm(userId, queryId, { filmUuid, isFav }) {
         })
       }).catch(err => console.log(err));
     }).catch(err => console.log(err));
+}
+
+function showFavouriteFilms(chatId, userId) {
+  User.findOne({ telegramId: userId })
+    .then(user => {
+      if (user) {
+        Film.find({ uuid: { '$in': user.films } }).then(films => {
+          let html;
+
+          if (films.length) {
+            html = films.map((f, i) => {
+              return `<b>${i + 1}</b> ${f.name} - <b>${f.rate}</b> (/f${f.uuid})`;
+            }).join('\n');
+          } else {
+            html = 'Вы пока ничего не добавили';
+          }
+          sendHTML(chatId, html, 'home');
+        });
+      } else {
+        sendHTML(chatId, 'Вы пока ничего не добавили', 'home');
+      }
+    });
+}
+
+function sendCinemasByQuery(userId, query) {
+  Cinema.find(query).then(cinemas => {
+    const html = cinemas.map((c, i) => {
+      return `<b>${i + 1}</b> ${c.name} - /c${c.uuid}`;
+    }).join('\n');
+    sendHTML(userId, html, 'home');
+  });
 }
