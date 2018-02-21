@@ -21,9 +21,11 @@ mongoose.connect(config.DB_URL, {
 
 require('./model/film.model');
 require('./model/cinema.model');
+require('./model/user.model');
 
 const Film = mongoose.model('films');
 const Cinema = mongoose.model('cinemas');
+const User = mongoose.model('users');
 // database.films.forEach(f => new Film(f).save().catch(e => console.log(e))); //заполняем базу данных массивом фильмов
 // database.cinemas.forEach(c => new Cinema(c).save().catch(e => console.log(e))); //заполняем базу данных массивом кинотеатров
 //cd /usr/bin/ -> mongo -> show databases -> use ycinema -> db.cinemas.find({})
