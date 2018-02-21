@@ -193,7 +193,7 @@ bot.on('callback_query', query => {
       toggleFavouriteFilm(userId, query.id, data);
       break;
     case ACTION_TYPE.SHOW_FILMS:
-      '';
+      sendFilmsByQuery(userId, { uuid: { '$in': data.filmUuid } });
       break;
   }
 });
