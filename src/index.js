@@ -112,6 +112,31 @@ bot.onText(/\/f(.+)/, (msg, [source, match]) => {
   });
 });
 
+bot.onText(/\/c(.+)/, (msg, [source, match]) => {
+  const cinemaUuid = helper.getItemUuid(source);
+  const chatId = helper.getChatId(msg);
+
+  Cinema.findOne({ uuid: cinemaUuid }).then(cinema => {
+    bot.sendMessage(chatId, `Кинотеатр ${cinema.name}`, {
+      reply_markup: {
+        inline_keyboard: [
+          [{
+            text: cinema.name,
+            url: cinema.url
+          }, {
+            text: 'Показать на карте',
+            callback_data: cinema.uuid
+          }],
+          [{
+            text: 'Показать фильмы',
+            callback_data: JSON.stringify(cinema.films)
+          }]
+        ]
+      }
+    });
+  });
+});
+
 
 //========get date from databases================
 function sendFilmsByQuery(chatId, query) {
