@@ -35,6 +35,13 @@ const bot = new TelegramBot(config.TOKEN, {
   polling: true
 });
 
+const ACTION_TYPE = {
+  TOGGLE_FAV_FILM: 'tff',
+  SHOW_CINEMAS: 'sc',
+  SHOW_CINEMAS_MAP: 'scm',
+  SHOW_FILMS: 'sf'
+};
+
 bot.onText(/\/start/, msg => {
   const text = `Здравствуйте, ${msg.from.first_name}\nВыберите команду для начала работы`;
   bot.sendMessage(helper.getChatId(msg), text, {
@@ -99,10 +106,16 @@ bot.onText(/\/f(.+)/, (msg, [source, match]) => {
         inline_keyboard: [
           [{
             text: 'Добавить в избранное',
-            callback_data: film.uuid
+            callback_data: JSON.stringify({
+              type: ACTION_TYPE.TOGGLE_FAV_FILM,
+              filmUuid: film.uuid
+            })
           }, {
             text: 'Показать кинотеатры',
-            callback_data: film.uuid
+            callback_data: JSON.stringify({
+              type: ACTION_TYPE.SHOW_CINEMAS,
+              cinemaUuids: film.cinemas
+            })
           }],
           [{
             text: `Кинопоиск ${film.name}`,
@@ -127,16 +140,50 @@ bot.onText(/\/c(.+)/, (msg, [source, match]) => {
             url: cinema.url
           }, {
             text: 'Показать на карте',
-            callback_data: cinema.uuid
+            callback_data: JSON.stringify({
+              type: ACTION_TYPE.SHOW_CINEMAS_MAP,
+              lat: cinema.location.latitude,
+              lon: cinema.location.longitude
+            })
           }],
           [{
             text: 'Показать фильмы',
-            callback_data: JSON.stringify(cinema.films)
+            callback_data: JSON.stringify({
+              type: ACTION_TYPE.SHOW_FILMS,
+              filmUuid: cinema.films
+            })
           }]
         ]
       }
     });
   });
+});
+
+bot.on('callback_query', query => {
+  let data;
+
+  try {
+    data = JSON.parse(query.data);
+  } catch (e) {
+    throw new Error('Data is not an object');
+  }
+
+  const { type } = data;
+
+  switch (type) {
+    case ACTION_TYPE.SHOW_CINEMAS_MAP:
+      ;
+      break;
+    case ACTION_TYPE.SHOW_CINEMAS:
+      ;
+      break;
+    case ACTION_TYPE.TOGGLE_FAV_FILM:
+      ;
+      break;
+    case ACTION_TYPE.SHOW_FILMS:
+      ;
+      break;
+  }
 });
 
 
