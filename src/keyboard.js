@@ -8,6 +8,5 @@ module.exports = {
     [kb.film.ection, kb.film.comedy],
     [kb.film.random],
     [kb.back]
-  ],
-
+  ]
 };

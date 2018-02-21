@@ -1,5 +1,6 @@
 process.env["NTBA_FIX_319"] = 1;
 const TelegramBot = require('node-telegram-bot-api');
+const mongoose = require('mongoose');
 const config = require('./config');
 const helper = require('./helper');
 const keyboard = require('./keyboard');
@@ -9,7 +10,14 @@ const bot = new TelegramBot(config.TOKEN, {
   polling: true
 });
 
+mongoose.connect(config.DB_URL, {
+    useMongoClient: true
+  })
+  .then(() => console.log('MondoDB connected'))
+  .catch((err) => console.log(err));
+
 helper.logStart();
+
 
 bot.onText(/\/start/, msg => {
   const text = `Здравствуйте, ${msg.from.first_name}\nВыберите команду для начала работы`;
