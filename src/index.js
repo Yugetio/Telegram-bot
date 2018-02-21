@@ -5,19 +5,26 @@ const config = require('./config');
 const helper = require('./helper');
 const keyboard = require('./keyboard');
 const kb = require('./keyboard-btn');
+const database = require('../database.json');
 
-const bot = new TelegramBot(config.TOKEN, {
-  polling: true
-});
+helper.logStart();
 
+//=============data base=================
+mongoose.Promise = global.Promise;
 mongoose.connect(config.DB_URL, {
-    useMongoClient: true
+    // useMongoClient: true
   })
   .then(() => console.log('MondoDB connected'))
   .catch((err) => console.log(err));
 
-helper.logStart();
+require('./model/film.model');
+const Film = mongoose.model('films');
+// database.films.forEach(f => new Film(f).save()); //заполняем базу данных массивом фильмов
 
+//===========================================
+const bot = new TelegramBot(config.TOKEN, {
+  polling: true
+});
 
 bot.onText(/\/start/, msg => {
   const text = `Здравствуйте, ${msg.from.first_name}\nВыберите команду для начала работы`;
@@ -48,5 +55,23 @@ bot.on('message', msg => {
         reply_markup: { keyboard: keyboard.home }
       });
       break;
+    case kb.film.comedy:
+      sendFilmsByQuery(chatID, {});
+      break;
+    case kb.film.ection:
+      sendFilmsByQuery(chatID, { type: 'comedy' });
+      break;
+    case kb.film.random:
+      sendFilmsByQuery(chatID, { type: 'action' });
+      break;
   }
 });
+
+
+//========get date from databases================
+function sendFilmsByQuery(chatId, query) {
+  Film.find(query).then(films => {
+    console.log(films);
+  });
+}
+//===============================================

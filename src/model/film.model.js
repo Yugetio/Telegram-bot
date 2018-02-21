@@ -21,7 +21,7 @@ const FilmSchema = new Schema({
     type: Number
   },
   length: {
-    type: Number
+    type: String
   },
   country: {
     type: String
@@ -38,4 +38,4 @@ const FilmSchema = new Schema({
   }
 });
 
-mongoose.model('films', FilmSchema)
+mongoose.model('films', FilmSchema);
