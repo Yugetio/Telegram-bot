@@ -18,8 +18,13 @@ mongoose.connect(config.DB_URL, {
   .catch((err) => console.log(err));
 
 require('./model/film.model');
+require('./model/cinema.model');
+
 const Film = mongoose.model('films');
-// database.films.forEach(f => new Film(f).save()); //заполняем базу данных массивом фильмов
+const Cinema = mongoose.model('cinemas');
+// database.films.forEach(f => new Film(f).save().catch(e => console.log(e))); //заполняем базу данных массивом фильмов
+// database.cinemas.forEach(c => new Cinema(c).save().catch(e => console.log(e))); //заполняем базу данных массивом кинотеатров
+//cd /usr/bin/ -> mongo -> show databases -> use ycinema -> db.cinemas.find({})
 
 //===========================================
 const bot = new TelegramBot(config.TOKEN, {
