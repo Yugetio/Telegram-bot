@@ -198,6 +198,33 @@ bot.on('callback_query', query => {
   }
 });
 
+bot.on('inline_query', query => {
+  Film.find({}).then(films => {
+    const results = films.map(f => {
+      const caption = `Название: ${f.name}\nГод: ${f.year}\nРейтинг: ${f.rate}\nДлительность: ${f.length}\nСтрана: ${f.country}`;
+      return {
+        id: f.uuid,
+        type: 'photo',
+        photo_url: f.picture,
+        thumb_url: f.picture,
+        caption: caption,
+        reply_markup: {
+          inline_keyboard: [
+            [{
+              text: `Кинопоиск: ${f.name}`,
+              url: f.link
+            }]
+          ]
+        }
+      }
+    });
+
+    bot.answerInlineQuery(query.id, results, {
+      cache_time: 0
+    });
+  });
+});
+
 
 //========get date from databases================
 function sendFilmsByQuery(chatId, query) {
